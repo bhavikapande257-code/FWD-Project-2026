@@ -1,5 +1,5 @@
 # FWD-Project-2026
-# Personal expense tracker; A minimalist web tool designed  to empower users to take control of their finances through real-time expense logging and visual spending breakdowns.
+# Personal expense tracker: A minimalist web tool designed  to empower users to take control of their finances through real-time expense logging and visual spending breakdowns.
 
 Live demo(for viewing live site here)
 Features:
