@@ -1,1 +1,94 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FinTrack | Reports</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/reports.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">FinTrack</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="add-transaction.html">Add</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="reports.html" class="active">Reports</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">&#9776;</button>
+  </nav>
+
+  <main class="reports-main">
+    <header class="reports-header">
+      <h1>Reports & Insights</h1>
+      <div class="report-controls">
+        <label for="report-month">Month</label>
+        <input type="month" id="report-month"/>
+      </div>
+    </header>
+
+    <!-- Summary Cards -->
+    <section class="report-summary">
+      <div class="card card-income">
+        <span class="card-label">Income This Period</span>
+        <span class="card-value" id="report-income">₹0.00</span>
+      </div>
+      <div class="card card-expense">
+        <span class="card-label">Expenses This Period</span>
+        <span class="card-value" id="report-expense">₹0.00</span>
+      </div>
+      <div class="card card-balance">
+        <span class="card-label">Net Savings</span>
+        <span class="card-value" id="report-net">₹0.00</span>
+      </div>
+      <div class="card card-neutral">
+        <span class="card-label">Transactions</span>
+        <span class="card-value" id="report-count">0</span>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="charts-section">
+      <div class="chart-card">
+        <h2>Spending by Category</h2>
+        <div class="chart-container">
+          <canvas id="category-chart" width="340" height="340"></canvas>
+          <div class="chart-legend" id="category-legend"></div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2>Income vs Expenses</h2>
+        <div class="bar-chart-container">
+          <canvas id="bar-chart" width="500" height="300"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Breakdown Table -->
+    <section class="breakdown-section">
+      <h2>Category Breakdown</h2>
+      <div class="breakdown-table-wrap">
+        <table class="breakdown-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Transactions</th>
+              <th>Total Amount</th>
+              <th>% of Expenses</th>
+            </tr>
+          </thead>
+          <tbody id="breakdown-body"></tbody>
+        </table>
+        <p class="empty-state" id="empty-report" style="display:none">
+          No data for selected period.
+        </p>
+      </div>
+    </section>
+
+    <!-- Top Lists -->
+    <section class="t
