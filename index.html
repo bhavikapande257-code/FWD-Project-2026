@@ -1,266 +1,111 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FinTrack | Dashboard</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/dashboard.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 </head>
 <body>
 
   <nav class="navbar">
-    <div class="nav-logo">FinTrack</div>
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Dashboard</a></li>
-      <li><a href="add-transaction.html">Add</a></li>
-      <li><a href="history.html">History</a></li>
-      <li><a href="reports.html">Reports</a></li>
-    </ul>
-    <button class="hamburger" id="hamburger" aria-label="Toggle menu">&#9776;</button>
+    <div class="navbar__inner">
+      <div class="navbar__logo">FinTrack</div>
+      <ul class="navbar__nav">
+        <li><a href="index.html" class="navbar__link active">Dashboard</a></li>
+        <li><a href="add-transaction.html" class="navbar__link">Add</a></li>
+        <li><a href="history.html" class="navbar__link">History</a></li>
+        <li><a href="reports.html" class="navbar__link">Reports</a></li>
+      </ul>
+    </div>
   </nav>
 
-  <main class="dashboard-main">
-    <header class="dash-header">
+  <main class="page-container">
+    <header style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
       <div>
-        <p class="greeting" id="greeting">Good morning</p>
-        <h1 class="dash-title">Your Financial Overview</h1>
+        <span class="card__label" id="greeting">System Initializing...</span>
+        <h1 style="font-family: var(--font-display); letter-spacing: -1px;">Financial Overview</h1>
       </div>
-      <a href="add-transaction.html" class="btn-primary">+ Add Transaction</a>
+      <a href="add-transaction.html" class="btn-primary" style="text-decoration: none;">+ Add Transaction</a>
     </header>
 
-    <section class="summary-cards">
-      <div class="card card-balance">
-        <span class="card-label">Net Balance</span>
-        <span class="card-value" id="net-balance">₹0.00</span>
-      </div>
-      <div class="card card-income">
-        <span class="card-label">Total Income</span>
-        <span class="card-value" id="total-income">₹0.00</span>
-      </div>
-      <div class="card card-expense">
-        <span class="card-label">Total Expenses</span>
-        <span class="card-value" id="total-expense">₹0.00</span>
-      </div>
-    </section>
-
-    <section class="recent-section">
-      <div class="section-header">
-        <h2>Recent Transactions</h2>
-        <a href="history.html" class="link-subtle">View all →</a>
-      </div>
-      <div class="transaction-list" id="recent-list">
-        <p class="empty-state">No transactions yet. <a href="add-transaction.html">Add one!</a></p>
-      </div>
-    </section>
-
-    <section class="budget-section">
-      <div class="section-header">
-        <h2>Monthly Budget</h2>
-        <button class="link-subtle" id="set-budget-btn">Set Budget</button>
-      </div>
-      <div class="budget-bar-wrap">
-        <div class="budget-bar">
-          <div class="budget-fill" id="budget-fill"></div>
+    <div class="dashboard-grid">
+      <section class="card card-balance">
+        <div>
+          <span class="card__label">Total Net Assets</span>
+          <div class="card__value" id="net-balance">₹0.00</div>
         </div>
-        <div class="budget-labels">
-          <span id="budget-spent">Spent: ₹0</span>
-          <span id="budget-limit">Limit: ₹0</span>
+        <div style="text-align: right;">
+          <span class="card__label">Project Node</span>
+          <span style="font-size: 11px; color: var(--text-muted);">CSE-106-2026</span>
         </div>
+      </section>
+
+      <div class="card">
+        <span class="card__label">Total Revenue</span>
+        <div class="card__value text-positive" id="total-income">₹0.00</div>
       </div>
+
+      <div class="card">
+        <span class="card__label">Total Expenditure</span>
+        <div class="card__value text-negative" id="total-expense">₹0.00</div>
+      </div>
+
+      <div class="card">
+        <span class="card__label">Active Budget</span>
+        <div class="card__value" id="budget-display">₹0.00</div>
+      </div>
+    </div>
+
+    <section style="margin-top: 60px;">
+      <h2 class="card__label" style="font-size: 12px; margin-bottom: 20px;">Recent Ledger Entries</h2>
+      <div class="recent-list" id="recent-list">
+        </div>
     </section>
   </main>
 
-  <!-- Budget Modal -->
-  <div class="modal-overlay" id="budget-modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal">
-      <h3>Set Monthly Budget</h3>
-      <label for="budget-input">Budget Amount (₹)</label>
-      <input type="number" id="budget-input" placeholder="e.g. 20000" min="0"/>
-      <div class="modal-actions">
-        <button class="btn-primary" id="save-budget">Save</button>
-        <button class="btn-ghost" id="cancel-budget">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="site-footer">
-    <span>FinTrack &copy; 2026 | CSE 106 Project</span>
+  <footer style="text-align: center; margin-top: 80px; padding-bottom: 40px; color: var(--text-muted); font-size: 10px; letter-spacing: 2px;">
+    FINTRACK © 2026 | BUILT FOR CSE 106
   </footer>
 
   <script>
-    // ── Storage Utilities ──────────────────────────────────────────
-    const Storage = (() => {
-      const TK = 'fintrack_transactions';
-      const BK = 'fintrack_budget';
+    const Storage = {
+      get: () => JSON.parse(localStorage.getItem('fintrack_transactions') || '[]'),
+      getBudget: () => parseFloat(localStorage.getItem('fintrack_budget') || '0')
+    };
 
-      function getTransactions() {
-        const d = localStorage.getItem(TK);
-        return d ? JSON.parse(d) : [];
-      }
-      function saveTransactions(list) {
-        localStorage.setItem(TK, JSON.stringify(list));
-      }
-      function addTransaction(t) {
-        const list = getTransactions();
-        t.id = Date.now().toString();
-        t.createdAt = new Date().toISOString();
-        list.unshift(t);
-        saveTransactions(list);
-        return t;
-      }
-      function getBudget() {
-        const d = localStorage.getItem(BK);
-        return d ? parseFloat(d) : 0;
-      }
-      function setBudget(amount) {
-        localStorage.setItem(BK, parseFloat(amount));
-      }
-      function getTotals(list) {
-        let income = 0, expense = 0;
-        list.forEach(t => {
-          if (t.type === 'income') income += parseFloat(t.amount);
-          else expense += parseFloat(t.amount);
-        });
-        return { income, expense, net: income - expense };
-      }
-      return { getTransactions, addTransaction, getBudget, setBudget, getTotals };
-    })();
-
-    // ── Helpers ────────────────────────────────────────────────────
-    function formatCurrency(amount) {
-      return '₹' + parseFloat(amount).toLocaleString('en-IN', {
-        minimumFractionDigits: 2, maximumFractionDigits: 2
-      });
-    }
-    function formatDate(dateStr) {
-      if (!dateStr) return '';
-      const [y, m, d] = dateStr.split('-');
-      return `${d}/${m}/${y}`;
-    }
-    function escapeHTML(str) {
-      const div = document.createElement('div');
-      div.appendChild(document.createTextNode(str));
-      return div.innerHTML;
-    }
-    function getCategoryIcon(category) {
-      const icons = {
-        Food:'🍔', Transport:'🚗', Shopping:'🛍️', Bills:'🧾',
-        Health:'💊', Education:'📚', Entertainment:'🎬',
-        Salary:'💼', Freelance:'💻', Investment:'📈',
-        Gift:'🎁', 'Other Expense':'📦', 'Other Income':'💰'
-      };
-      return icons[category] || '💳';
-    }
-
-    // ── Greeting ───────────────────────────────────────────────────
-    function setGreeting() {
-      const h = new Date().getHours();
-      let text = 'Good morning';
-      if (h >= 12 && h < 17) text = 'Good afternoon';
-      else if (h >= 17) text = 'Good evening';
-      document.getElementById('greeting').textContent = text;
-    }
-
-    // ── Summary Cards ──────────────────────────────────────────────
-    function renderSummary() {
-      const transactions = Storage.getTransactions();
-      const { income, expense, net } = Storage.getTotals(transactions);
-      document.getElementById('total-income').textContent = formatCurrency(income);
-      document.getElementById('total-expense').textContent = formatCurrency(expense);
-      const netEl = document.getElementById('net-balance');
-      netEl.textContent = formatCurrency(net);
-      netEl.className = 'card-value ' + (net >= 0 ? 'positive' : 'negative');
-    }
-
-    // ── Recent Transactions ────────────────────────────────────────
-    function renderRecentTransactions() {
-      const transactions = Storage.getTransactions().slice(0, 5);
-      const container = document.getElementById('recent-list');
-      if (transactions.length === 0) {
-        container.innerHTML = '<p class="empty-state">No transactions yet. <a href="add-transaction.html">Add one!</a></p>';
-        return;
-      }
-      container.innerHTML = transactions.map(t => `
-        <div class="txn-item">
-          <div class="txn-icon ${t.type}">${getCategoryIcon(t.category)}</div>
-          <div class="txn-info">
-            <span class="txn-title">${escapeHTML(t.title)}</span>
-            <span class="txn-meta">${t.category} &bull; ${formatDate(t.date)}</span>
-          </div>
-          <span class="txn-amount ${t.type}">${t.type === 'income' ? '+' : '-'}${formatCurrency(t.amount)}</span>
-        </div>
-      `).join('');
-    }
-
-    // ── Budget Bar ─────────────────────────────────────────────────
-    function renderBudget() {
+    function init() {
+      const txns = Storage.get();
       const budget = Storage.getBudget();
-      const transactions = Storage.getTransactions();
-      const now = new Date();
-      const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-      const spent = transactions
-        .filter(t => t.type === 'expense' && t.date && t.date.startsWith(thisMonth))
-        .reduce((s, t) => s + parseFloat(t.amount), 0);
+      
+      let inc = 0, exp = 0;
+      txns.forEach(t => t.type === 'income' ? inc += t.amount : exp += t.amount);
 
-      const pct = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
-      const fill = document.getElementById('budget-fill');
-      fill.style.width = pct + '%';
-      fill.className = 'budget-fill' + (pct >= 90 ? ' danger' : pct >= 70 ? ' warning' : '');
-      document.getElementById('budget-spent').textContent = `Spent: ${formatCurrency(spent)}`;
-      document.getElementById('budget-limit').textContent = `Limit: ${formatCurrency(budget)}`;
+      document.getElementById('net-balance').textContent = `₹${(inc - exp).toLocaleString()}`;
+      document.getElementById('total-income').textContent = `₹${inc.toLocaleString()}`;
+      document.getElementById('total-expense').textContent = `₹${exp.toLocaleString()}`;
+      document.getElementById('budget-display').textContent = `₹${budget.toLocaleString()}`;
+
+      const listHtml = txns.slice(0, 5).map(t => `
+        <div class="recent-item">
+          <div style="font-size: 20px;">${t.type === 'income' ? '●' : '○'}</div>
+          <div class="recent-item__info">
+            <span class="recent-item__name">${t.title}</span>
+            <span class="recent-item__meta">${t.category} • ${t.date}</span>
+          </div>
+          <div class="card__value ${t.type === 'income' ? 'text-positive' : 'text-negative'}" style="font-size: 14px;">
+            ${t.type === 'income' ? '+' : '-'}₹${t.amount.toLocaleString()}
+          </div>
+        </div>
+      `).join('') || '<p style="padding: 24px; color: var(--text-muted);">The ledger is currently empty.</p>';
+      
+      document.getElementById('recent-list').innerHTML = listHtml;
+
+      const hour = new Date().getHours();
+      document.getElementById('greeting').textContent = hour < 12 ? 'Morning, Researcher' : hour < 17 ? 'Afternoon, Researcher' : 'Evening, Researcher';
     }
 
-    // ── Budget Modal ───────────────────────────────────────────────
-    function initBudgetModal() {
-      const modal = document.getElementById('budget-modal');
-      const input = document.getElementById('budget-input');
-
-      document.getElementById('set-budget-btn').addEventListener('click', () => {
-        input.value = Storage.getBudget() || '';
-        modal.classList.add('active');
-        modal.setAttribute('aria-hidden', 'false');
-        input.focus();
-      });
-      document.getElementById('save-budget').addEventListener('click', () => {
-        const val = parseFloat(input.value);
-        if (!isNaN(val) && val >= 0) {
-          Storage.setBudget(val);
-          modal.classList.remove('active');
-          modal.setAttribute('aria-hidden', 'true');
-          renderBudget();
-        }
-      });
-      document.getElementById('cancel-budget').addEventListener('click', () => {
-        modal.classList.remove('active');
-        modal.setAttribute('aria-hidden', 'true');
-      });
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.remove('active');
-          modal.setAttribute('aria-hidden', 'true');
-        }
-      });
-    }
-
-    // ── Hamburger ──────────────────────────────────────────────────
-    function initHamburger() {
-      document.getElementById('hamburger').addEventListener('click', () => {
-        document.querySelector('.nav-links').classList.toggle('open');
-      });
-    }
-
-    // ── Init ───────────────────────────────────────────────────────
-    document.addEventListener('DOMContentLoaded', () => {
-      setGreeting();
-      renderSummary();
-      renderRecentTransactions();
-      renderBudget();
-      initBudgetModal();
-      initHamburger();
-    });
+    document.addEventListener('DOMContentLoaded', init);
   </script>
-
 </body>
 </html>
