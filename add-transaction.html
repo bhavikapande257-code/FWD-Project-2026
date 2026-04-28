@@ -1,66 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FinTrack | Add Transaction</title>
-  <link rel="stylesheet" href="css/style.css"/>
-  <link rel="stylesheet" href="css/form.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <title>FinTrack | Add Entry</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
   <nav class="navbar">
-    <div class="nav-logo">FinTrack</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="add-transaction.html" class="active">Add</a></li>
-      <li><a href="history.html">History</a></li>
-      <li><a href="reports.html">Reports</a></li>
-    </ul>
-    <button class="hamburger" id="hamburger" aria-label="Toggle menu">&#9776;</button>
+    <div class="navbar__inner">
+      <div class="navbar__logo">FinTrack</div>
+      <ul class="navbar__nav">
+        <li><a href="index.html" class="navbar__link">Dashboard</a></li>
+        <li><a href="add-transaction.html" class="navbar__link active">Add</a></li>
+        <li><a href="history.html" class="navbar__link">History</a></li>
+        <li><a href="reports.html" class="navbar__link">Reports</a></li>
+      </ul>
+    </div>
   </nav>
 
-  <main class="form-main">
-    <div class="form-card">
-      <h1 class="form-title">Add Transaction</h1>
-      <p class="form-subtitle">Record a new income or expense</p>
+  <main class="page-container" style="max-width: 600px;">
+    <div class="card" style="padding: 40px;">
+      <header style="margin-bottom: 30px;">
+        <span class="card__label">New Transaction</span>
+        <h1 style="font-family: var(--font-display); letter-spacing: -1px;">Commit to Ledger</h1>
+      </header>
 
       <form id="transaction-form" novalidate>
-
-        <div class="type-toggle">
-          <button type="button" class="toggle-btn active" id="btn-expense">Expense</button>
-          <button type="button" class="toggle-btn" id="btn-income">Income</button>
+        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 30px;">
+          <button type="button" class="btn-primary" id="btn-expense" style="flex: 1; background: var(--expense); border-color: var(--expense);">Expenditure (○)</button>
+          <button type="button" class="btn-secondary" id="btn-income" style="flex: 1; border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; cursor: pointer;">Revenue (●)</button>
         </div>
         <input type="hidden" id="transaction-type" value="expense"/>
 
         <div class="form-group">
-          <label for="title">Title <span class="required">*</span></label>
-          <input type="text" id="title" placeholder="e.g. Grocery shopping" maxlength="60"/>
-          <span class="error-msg" id="error-title"></span>
+          <label class="card__label" for="title">Description <span style="color: var(--expense);">*</span></label>
+          <input type="text" id="title" class="form-input" placeholder="e.g. Rare Manuscript Procurement" maxlength="60"/>
+          <span id="error-title" style="color: var(--expense); font-size: 10px; display: block; margin-top: 5px;"></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="form-group">
+            <label class="card__label" for="amount">Amount (₹) <span style="color: var(--expense);">*</span></label>
+            <input type="number" id="amount" class="form-input" placeholder="0.00" min="0" step="0.01"/>
+            <span id="error-amount" style="color: var(--expense); font-size: 10px; display: block; margin-top: 5px;"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="card__label" for="date">Log Date <span style="color: var(--expense);">*</span></label>
+            <input type="date" id="date" class="form-input"/>
+            <span id="error-date" style="color: var(--expense); font-size: 10px; display: block; margin-top: 5px;"></span>
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="amount">Amount (₹) <span class="required">*</span></label>
-          <input type="number" id="amount" placeholder="0.00" min="0" step="0.01"/>
-          <span class="error-msg" id="error-amount"></span>
-        </div>
-
-        <div class="form-group">
-          <label for="category">Category <span class="required">*</span></label>
-          <select id="category">
-            <option value="">-- Select category --</option>
-            <optgroup label="Expense Categories">
+          <label class="card__label" for="category">Classification <span style="color: var(--expense);">*</span></label>
+          <select id="category" class="form-input" style="background: var(--bg-surface); cursor: pointer;">
+            <option value="">-- Select Category --</option>
+            <optgroup label="Expenditure">
+              <option value="Education">Education</option>
               <option value="Food">Food</option>
               <option value="Transport">Transport</option>
               <option value="Shopping">Shopping</option>
               <option value="Bills">Bills</option>
-              <option value="Health">Health</option>
-              <option value="Education">Education</option>
-              <option value="Entertainment">Entertainment</option>
+              <option value="Entertainment">Leisure</option>
               <option value="Other Expense">Other</option>
             </optgroup>
-            <optgroup label="Income Categories">
+            <optgroup label="Revenue">
               <option value="Salary">Salary</option>
               <option value="Freelance">Freelance</option>
               <option value="Investment">Investment</option>
@@ -68,205 +75,128 @@
               <option value="Other Income">Other</option>
             </optgroup>
           </select>
-          <span class="error-msg" id="error-category"></span>
+          <span id="error-category" style="color: var(--expense); font-size: 10px; display: block; margin-top: 5px;"></span>
         </div>
 
         <div class="form-group">
-          <label for="date">Date <span class="required">*</span></label>
-          <input type="date" id="date"/>
-          <span class="error-msg" id="error-date"></span>
+          <label class="card__label" for="note">Field Notes (Optional)</label>
+          <textarea id="note" class="form-input" placeholder="Additional details..." rows="3" style="resize: none;"></textarea>
         </div>
 
-        <div class="form-group">
-          <label for="note">Note (optional)</label>
-          <textarea id="note" placeholder="Any additional details..." rows="3" maxlength="200"></textarea>
+        <div style="margin-top: 40px; display: flex; gap: 15px;">
+          <button type="submit" class="btn-primary" style="flex: 2;">Commit Transaction</button>
+          <button type="reset" id="clear-btn" style="flex: 1; background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; cursor: pointer;">Reset</button>
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Save Transaction</button>
-          <button type="reset" class="btn-ghost" id="clear-btn">Clear</button>
-        </div>
-
-        <div class="success-msg" id="success-msg" role="alert" aria-live="polite"></div>
+        <div id="success-msg" style="margin-top: 20px; text-align: center; font-family: var(--font-mono); font-size: 12px; color: var(--income);"></div>
 
       </form>
     </div>
   </main>
 
-  <footer class="site-footer">
-    <span>FinTrack &copy; 2026 | CSE 106 Project</span>
+  <footer style="text-align: center; margin-top: 80px; padding-bottom: 40px; color: var(--text-muted); font-size: 10px; letter-spacing: 2px;">
+    FINTRACK &copy; 2026 | CSE 106 PROJECT
   </footer>
 
   <script>
-    // ── Storage Utilities ──────────────────────────────────────────
     const Storage = (() => {
       const TK = 'fintrack_transactions';
-
-      function getTransactions() {
-        const d = localStorage.getItem(TK);
-        return d ? JSON.parse(d) : [];
-      }
-      function saveTransactions(list) {
-        localStorage.setItem(TK, JSON.stringify(list));
-      }
-      function addTransaction(t) {
-        const list = getTransactions();
-        t.id = Date.now().toString();
-        t.createdAt = new Date().toISOString();
-        list.unshift(t);
-        saveTransactions(list);
-        return t;
-      }
-      return { addTransaction };
+      return {
+        get: () => JSON.parse(localStorage.getItem(TK) || '[]'),
+        save: (list) => localStorage.setItem(TK, JSON.stringify(list)),
+        add: (t) => {
+          const list = JSON.parse(localStorage.getItem(TK) || '[]');
+          t.id = Date.now().toString();
+          list.unshift(t);
+          localStorage.setItem(TK, JSON.stringify(list));
+        }
+      };
     })();
 
-    // ── Set today's date as default & max ──────────────────────────
     function setTodayDate() {
       const today = new Date().toISOString().split('T')[0];
-      document.getElementById('date').value = today;
-      document.getElementById('date').max = today;
+      const dateEl = document.getElementById('date');
+      dateEl.value = today;
+      dateEl.max = today;
     }
 
-    // ── Income / Expense Toggle ────────────────────────────────────
     function initTypeToggle() {
-      const btnExpense = document.getElementById('btn-expense');
-      const btnIncome  = document.getElementById('btn-income');
-      const typeInput  = document.getElementById('transaction-type');
+      const btnExp = document.getElementById('btn-expense');
+      const btnInc = document.getElementById('btn-income');
+      const typeInp = document.getElementById('transaction-type');
 
-      btnExpense.addEventListener('click', () => {
-        btnExpense.classList.add('active');
-        btnIncome.classList.remove('active');
-        typeInput.value = 'expense';
+      btnExp.addEventListener('click', () => {
+        btnExp.style.background = 'var(--expense)';
+        btnExp.style.color = 'var(--text-primary)';
+        btnInc.style.background = 'transparent';
+        typeInp.value = 'expense';
       });
 
-      btnIncome.addEventListener('click', () => {
-        btnIncome.classList.add('active');
-        btnExpense.classList.remove('active');
-        typeInput.value = 'income';
+      btnInc.addEventListener('click', () => {
+        btnInc.style.background = 'var(--income)';
+        btnInc.style.color = 'var(--text-primary)';
+        btnExp.style.background = 'transparent';
+        typeInp.value = 'income';
       });
     }
 
-    // ── Form Validation ────────────────────────────────────────────
     function validateForm() {
       let isValid = true;
-      clearAllErrors();
+      ['title', 'amount', 'category', 'date'].forEach(id => {
+        document.getElementById(`error-${id}`).textContent = '';
+      });
 
-      const title    = document.getElementById('title').value.trim();
-      const amount   = document.getElementById('amount').value;
+      const title = document.getElementById('title').value.trim();
+      const amount = document.getElementById('amount').value;
       const category = document.getElementById('category').value;
-      const date     = document.getElementById('date').value;
+      const date = document.getElementById('date').value;
 
-      if (!title) {
-        showError('title', 'Title is required.');
-        isValid = false;
-      } else if (title.length < 2) {
-        showError('title', 'Title must be at least 2 characters.');
+      if (!title || title.length < 2) {
+        document.getElementById('error-title').textContent = 'Title required (min 2 chars).';
         isValid = false;
       }
-
-      if (!amount) {
-        showError('amount', 'Amount is required.');
-        isValid = false;
-      } else if (parseFloat(amount) <= 0) {
-        showError('amount', 'Amount must be greater than 0.');
+      if (!amount || parseFloat(amount) <= 0) {
+        document.getElementById('error-amount').textContent = 'Valid amount required.';
         isValid = false;
       }
-
       if (!category) {
-        showError('category', 'Please select a category.');
+        document.getElementById('error-category').textContent = 'Select a classification.';
         isValid = false;
       }
-
       if (!date) {
-        showError('date', 'Date is required.');
+        document.getElementById('error-date').textContent = 'Date required.';
         isValid = false;
       }
 
       return isValid;
     }
 
-    // ── Save Transaction ───────────────────────────────────────────
-    function saveTransaction() {
-      const transaction = {
-        title    : document.getElementById('title').value.trim(),
-        amount   : parseFloat(document.getElementById('amount').value),
-        category : document.getElementById('category').value,
-        date     : document.getElementById('date').value,
-        note     : document.getElementById('note').value.trim(),
-        type     : document.getElementById('transaction-type').value
+    document.getElementById('transaction-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      const t = {
+        title: document.getElementById('title').value.trim(),
+        amount: parseFloat(document.getElementById('amount').value),
+        category: document.getElementById('category').value,
+        date: document.getElementById('date').value,
+        note: document.getElementById('note').value.trim(),
+        type: document.getElementById('transaction-type').value
       };
 
-      Storage.addTransaction(transaction);
+      Storage.add(t);
 
-      // Show success message
       const msg = document.getElementById('success-msg');
-      msg.textContent = '✓ Transaction saved successfully!';
-      msg.classList.add('show');
-
-      // Reset form
-      document.getElementById('transaction-form').reset();
-      setTodayDate();
-      document.getElementById('btn-expense').classList.add('active');
-      document.getElementById('btn-income').classList.remove('active');
-      document.getElementById('transaction-type').value = 'expense';
-
+      msg.textContent = '✓ ENTRY COMMITTED TO LEDGER';
+      
       setTimeout(() => {
-        msg.textContent = '';
-        msg.classList.remove('show');
-      }, 3000);
-    }
+        window.location.href = 'index.html';
+      }, 1500);
+    });
 
-    // ── Error Helpers ──────────────────────────────────────────────
-    function showError(fieldId, message) {
-      const errEl   = document.getElementById('error-' + fieldId);
-      const inputEl = document.getElementById(fieldId);
-      if (errEl)   errEl.textContent = message;
-      if (inputEl) inputEl.classList.add('input-error');
-    }
-
-    function clearError(fieldId) {
-      const errEl   = document.getElementById('error-' + fieldId);
-      const inputEl = document.getElementById(fieldId);
-      if (errEl)   errEl.textContent = '';
-      if (inputEl) inputEl.classList.remove('input-error');
-    }
-
-    function clearAllErrors() {
-      ['title', 'amount', 'category', 'date'].forEach(clearError);
-    }
-
-    // ── Hamburger ──────────────────────────────────────────────────
-    function initHamburger() {
-      document.getElementById('hamburger').addEventListener('click', () => {
-        document.querySelector('.nav-links').classList.toggle('open');
-      });
-    }
-
-    // ── Init ───────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
       setTodayDate();
       initTypeToggle();
-      initHamburger();
-
-      // Live clear errors on input
-      ['title', 'amount', 'category', 'date'].forEach(id => {
-        document.getElementById(id).addEventListener('input',  () => clearError(id));
-        document.getElementById(id).addEventListener('change', () => clearError(id));
-      });
-
-      // Form submit
-      document.getElementById('transaction-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (validateForm()) saveTransaction();
-      });
-
-      // Clear button — reset date and errors too
-      document.getElementById('clear-btn').addEventListener('click', () => {
-        clearAllErrors();
-        document.getElementById('success-msg').textContent = '';
-        document.getElementById('success-msg').classList.remove('show');
-        setTodayDate();
-      });
     });
   </script>
 
