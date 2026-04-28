@@ -2,347 +2,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FinTrack | Transaction History</title>
-  <link rel="stylesheet" href="css/style.css"/>
-  <link rel="stylesheet" href="css/history.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <meta charset="UTF-8" />
+  <title>FinTrack | Logs</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-
   <nav class="navbar">
-    <div class="nav-logo">FinTrack</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="add-transaction.html">Add</a></li>
-      <li><a href="history.html" class="active">History</a></li>
-      <li><a href="reports.html">Reports</a></li>
-    </ul>
-    <button class="hamburger" id="hamburger" aria-label="Toggle menu">&#9776;</button>
+    <div class="navbar__inner">
+      <div class="navbar__logo">FinTrack</div>
+      <ul class="navbar__nav">
+        <li><a href="index.html" class="navbar__link">Dashboard</a></li>
+        <li><a href="add-transaction.html" class="navbar__link">Add</a></li>
+        <li><a href="history.html" class="navbar__link active">History</a></li>
+        <li><a href="reports.html" class="navbar__link">Reports</a></li>
+      </ul>
+    </div>
   </nav>
 
-  <main class="history-main">
-    <header class="history-header">
-      <h1>Transaction History</h1>
-      <button class="btn-danger" id="clear-all-btn">Clear All</button>
+  <main class="page-container">
+    <header style="margin-bottom: 40px;">
+      <h1 style="font-family: var(--font-display);">Transaction Archive</h1>
+      <p class="card__label">Complete historical data from local storage</p>
     </header>
 
-    <!-- Filters -->
-    <section class="filters">
-      <div class="filter-group">
-        <label for="filter-type">Type</label>
-        <select id="filter-type">
-          <option value="all">All</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
+    <div class="recent-list" id="full-history">
       </div>
 
-      <div class="filter-group">
-        <label for="filter-category">Category</label>
-        <select id="filter-category">
-          <option value="all">All Categories</option>
-          <option value="Food">Food</option>
-          <option value="Transport">Transport</option>
-          <option value="Shopping">Shopping</option>
-          <option value="Bills">Bills</option>
-          <option value="Health">Health</option>
-          <option value="Education">Education</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Salary">Salary</option>
-          <option value="Freelance">Freelance</option>
-          <option value="Investment">Investment</option>
-          <option value="Gift">Gift</option>
-          <option value="Other Expense">Other Expense</option>
-          <option value="Other Income">Other Income</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="filter-from">From</label>
-        <input type="date" id="filter-from"/>
-      </div>
-
-      <div class="filter-group">
-        <label for="filter-to">To</label>
-        <input type="date" id="filter-to"/>
-      </div>
-
-      <div class="filter-group">
-        <label for="search-input">Search</label>
-        <input type="text" id="search-input" placeholder="Search by title..."/>
-      </div>
-
-      <button class="btn-ghost" id="reset-filters">Reset</button>
-    </section>
-
-    <!-- Summary Row -->
-    <div class="history-summary">
-      <span>Showing <strong id="count-display">0</strong> transactions</span>
-      <span>Filtered Total: <strong id="filtered-total">₹0.00</strong></span>
-    </div>
-
-    <!-- Table -->
-    <div class="transaction-table-wrap">
-      <table class="transaction-table" id="history-table">
-        <thead>
-          <tr>
-            <th data-sort="date" class="sortable">Date <span class="sort-icon">↕</span></th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Type</th>
-            <th data-sort="amount" class="sortable">Amount <span class="sort-icon">↕</span></th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="history-body"></tbody>
-      </table>
-      <p class="empty-state" id="empty-history" style="display:none">
-        No transactions match your filters.
-      </p>
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination" id="pagination"></div>
+    <button id="clear-data" style="margin-top: 40px; background: transparent; border: 1px solid var(--expense); color: var(--expense); padding: 8px 16px; font-family: var(--font-mono); font-size: 10px; cursor: pointer;">
+      WIPE LOCAL DATA
+    </button>
   </main>
 
-  <!-- Edit Modal -->
-  <div class="modal-overlay" id="edit-modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal">
-      <h3>Edit Transaction</h3>
-      <div class="form-group">
-        <label for="edit-title">Title</label>
-        <input type="text" id="edit-title"/>
-      </div>
-      <div class="form-group">
-        <label for="edit-amount">Amount (₹)</label>
-        <input type="number" id="edit-amount" min="0" step="0.01"/>
-      </div>
-      <div class="form-group">
-        <label for="edit-category">Category</label>
-        <select id="edit-category">
-          <option value="Food">Food</option>
-          <option value="Transport">Transport</option>
-          <option value="Shopping">Shopping</option>
-          <option value="Bills">Bills</option>
-          <option value="Health">Health</option>
-          <option value="Education">Education</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Salary">Salary</option>
-          <option value="Freelance">Freelance</option>
-          <option value="Investment">Investment</option>
-          <option value="Gift">Gift</option>
-          <option value="Other Expense">Other Expense</option>
-          <option value="Other Income">Other Income</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="edit-date">Date</label>
-        <input type="date" id="edit-date"/>
-      </div>
-      <div class="form-group">
-        <label for="edit-note">Note</label>
-        <textarea id="edit-note" rows="2"></textarea>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-primary" id="save-edit">Save Changes</button>
-        <button class="btn-ghost" id="cancel-edit">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Delete Confirm Modal -->
-  <div class="modal-overlay" id="delete-modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal modal-sm">
-      <h3>Delete Transaction?</h3>
-      <p>This action cannot be undone.</p>
-      <div class="modal-actions">
-        <button class="btn-danger" id="confirm-delete">Delete</button>
-        <button class="btn-ghost" id="cancel-delete">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="site-footer">
-    <span>FinTrack &copy; 2026 | CSE 106 Project</span>
-  </footer>
-
   <script>
-    // ── Storage Utilities ──────────────────────────────────────────
-    const Storage = (() => {
-      const TK = 'fintrack_transactions';
+    function renderHistory() {
+      const txns = JSON.parse(localStorage.getItem('fintrack_transactions') || '[]');
+      const container = document.getElementById('full-history');
+      
+      container.innerHTML = txns.map(t => `
+        <div class="recent-item">
+          <div style="width: 100px; font-size: 11px; color: var(--text-muted);">${t.date}</div>
+          <div class="recent-item__info">
+            <span class="recent-item__name">${t.title}</span>
+            <span class="recent-item__meta">${t.category}</span>
+          </div>
+          <div class="card__value ${t.type === 'income' ? 'text-positive' : 'text-negative'}" style="font-size: 16px;">
+            ${t.type === 'income' ? '+' : '-'}₹${t.amount.toLocaleString()}
+          </div>
+        </div>
+      `).join('') || '<p style="padding: 40px; text-align: center; color: var(--text-muted);">Archive is currently empty.</p>';
+    }
 
-      function getTransactions() {
-        const d = localStorage.getItem(TK);
-        return d ? JSON.parse(d) : [];
+    document.getElementById('clear-data').addEventListener('click', () => {
+      if(confirm("Confirm deletion of all transaction records?")) {
+        localStorage.removeItem('fintrack_transactions');
+        renderHistory();
       }
-      function saveTransactions(list) {
-        localStorage.setItem(TK, JSON.stringify(list));
-      }
-      function updateTransaction(id, fields) {
-        const list = getTransactions();
-        const i = list.findIndex(t => t.id === id);
-        if (i !== -1) {
-          list[i] = { ...list[i], ...fields };
-          saveTransactions(list);
-          return true;
-        }
-        return false;
-      }
-      function deleteTransaction(id) {
-        saveTransactions(getTransactions().filter(t => t.id !== id));
-      }
-      function clearAllTransactions() {
-        localStorage.removeItem(TK);
-      }
-      return { getTransactions, updateTransaction, deleteTransaction, clearAllTransactions };
-    })();
+    });
 
-    // ── State ──────────────────────────────────────────────────────
-    let currentPage    = 1;
-    const PER_PAGE     = 10;
-    let sortField      = 'date';
-    let sortDir        = 'desc';
-    let pendingDeleteId = null;
-    let editingId       = null;
-
-    // ── Helpers ────────────────────────────────────────────────────
-    function formatCurrency(amount) {
-      return '₹' + parseFloat(amount).toLocaleString('en-IN', {
-        minimumFractionDigits: 2, maximumFractionDigits: 2
-      });
-    }
-    function formatDate(dateStr) {
-      if (!dateStr) return '';
-      const [y, m, d] = dateStr.split('-');
-      return `${d}/${m}/${y}`;
-    }
-    function escapeHTML(str) {
-      const div = document.createElement('div');
-      div.appendChild(document.createTextNode(str));
-      return div.innerHTML;
-    }
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-    function openModal(id) {
-      const m = document.getElementById(id);
-      m.classList.add('active');
-      m.setAttribute('aria-hidden', 'false');
-    }
-    function closeModal(id) {
-      const m = document.getElementById(id);
-      m.classList.remove('active');
-      m.setAttribute('aria-hidden', 'true');
-    }
-
-    // ── Get Filtered + Sorted Transactions ─────────────────────────
-    function getFiltered() {
-      const type     = document.getElementById('filter-type').value;
-      const category = document.getElementById('filter-category').value;
-      const from     = document.getElementById('filter-from').value;
-      const to       = document.getElementById('filter-to').value;
-      const search   = document.getElementById('search-input').value.trim().toLowerCase();
-
-      let list = Storage.getTransactions();
-
-      if (type !== 'all')     list = list.filter(t => t.type === type);
-      if (category !== 'all') list = list.filter(t => t.category === category);
-      if (from)               list = list.filter(t => t.date >= from);
-      if (to)                 list = list.filter(t => t.date <= to);
-      if (search)             list = list.filter(t => t.title.toLowerCase().includes(search));
-
-      list.sort((a, b) => {
-        let vA = sortField === 'amount' ? parseFloat(a.amount) : a.date;
-        let vB = sortField === 'amount' ? parseFloat(b.amount) : b.date;
-        if (vA < vB) return sortDir === 'asc' ? -1 : 1;
-        if (vA > vB) return sortDir === 'asc' ?  1 : -1;
-        return 0;
-      });
-
-      return list;
-    }
-
-    // ── Render Table ───────────────────────────────────────────────
-    function renderTable() {
-      const list = getFiltered();
-
-      // Filtered net total
-      const total = list.reduce((s, t) =>
-        s + (t.type === 'income' ? parseFloat(t.amount) : -parseFloat(t.amount)), 0);
-
-      document.getElementById('count-display').textContent  = list.length;
-      document.getElementById('filtered-total').textContent = formatCurrency(total);
-
-      const totalPages = Math.ceil(list.length / PER_PAGE) || 1;
-      if (currentPage > totalPages) currentPage = totalPages;
-
-      const pageData = list.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
-      const tbody    = document.getElementById('history-body');
-      const empty    = document.getElementById('empty-history');
-
-      if (pageData.length === 0) {
-        tbody.innerHTML   = '';
-        empty.style.display = 'block';
-      } else {
-        empty.style.display = 'none';
-        tbody.innerHTML = pageData.map(t => `
-          <tr class="txn-row ${t.type}">
-            <td data-label="Date">${formatDate(t.date)}</td>
-            <td data-label="Title">
-              ${escapeHTML(t.title)}
-              ${t.note ? `<span class="note-tip" title="${escapeHTML(t.note)}"> ℹ</span>` : ''}
-            </td>
-            <td data-label="Category"><span class="cat-badge">${t.category}</span></td>
-            <td data-label="Type"><span class="type-badge ${t.type}">${capitalize(t.type)}</span></td>
-            <td data-label="Amount" class="amount ${t.type}">
-              ${t.type === 'income' ? '+' : '-'}${formatCurrency(t.amount)}
-            </td>
-            <td data-label="Actions" class="actions-cell">
-              <button class="btn-icon edit-btn"   data-id="${t.id}" title="Edit">✏️</button>
-              <button class="btn-icon delete-btn" data-id="${t.id}" title="Delete">🗑️</button>
-            </td>
-          </tr>
-        `).join('');
-
-        tbody.querySelectorAll('.edit-btn').forEach(btn =>
-          btn.addEventListener('click', () => openEditModal(btn.dataset.id))
-        );
-        tbody.querySelectorAll('.delete-btn').forEach(btn =>
-          btn.addEventListener('click', () => openDeleteModal(btn.dataset.id))
-        );
-      }
-
-      renderPagination(totalPages);
-    }
-
-    // ── Pagination ─────────────────────────────────────────────────
-    function renderPagination(totalPages) {
-      const container = document.getElementById('pagination');
-      if (totalPages <= 1) { container.innerHTML = ''; return; }
-
-      let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">&#8592;</button>`;
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-      }
-      html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">&#8594;</button>`;
-      container.innerHTML = html;
-
-      container.querySelectorAll('.page-btn').forEach(btn =>
-        btn.addEventListener('click', () => {
-          currentPage = parseInt(btn.dataset.page);
-          renderTable();
-        })
-      );
-    }
-
-    // ── Edit Modal ─────────────────────────────────────────────────
-    function openEditModal(id) {
-      const t = Storage.getTransactions().find(x => x.id === id);
-      if (!t) return;
-      editingId = id;
-      document.getElementById('edit-title').value    = t.title;
-      document.getElementById('edit-amount').value   = t.amount;
-      document.getElementById('edit-category').value = t.category;
-      document.getElementById('edit-date').value     = t.date;
+    document.addEventListener('DOMContentLoaded', renderHistory);
+  </script>
+</body>
+</html>
